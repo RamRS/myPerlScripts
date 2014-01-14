@@ -5,6 +5,7 @@ use Bio::SeqIO;
 use Bio::SearchIO;
 use Bio::SearchIO::Writer::TextResultWriter;
 use Getopt::ArgParse;
+use File::Basename;
 
 # This script reads a BLAST results file as input and filters out query
 # sequences with no hits to the database.
@@ -17,7 +18,7 @@ my $argPr = Getopt::ArgParse->new_parser(
 			);
 
 # Add arguments to capture input FASTA file
-$argPr->add_arg('--fasta','-f',required=>1,help=>'input FASTA file');
+$argPr->add_arg('--in','-i',required=>1,help=>'input BLAST results file');
 
 # Print usage on improper call
 if(scalar(@ARGV) != 1)
@@ -30,13 +31,24 @@ if(scalar(@ARGV) != 1)
 $\="\n";
 my $argArr = $argPr->parse_args();
 my $inFile = $argArr->fasta;
-my $out = shift;
+
+# Determine output file to write filtered results to
+my ($fileName,$dirPath,$extn)=fileparse($inFile,qr/\.[^.]*/);
+my $outFile = "${dirPath}${fileName}_filtered.txt";
+
+# Check for input file existence, quit otherwise
+unless (-e $inFile) 
+{
+	print "Input BLAST file does not exist!";
+	exit(1);	
+}
+print "Writing filtered BLAST results to $outFile";
 
 # Create BioPerl objects to read BLAST results file and an outputformatter
 # object to format output before writing it to output file
 my $blast = Bio::SearchIO->new( -file => "$inFile", -format => 'blast');
 my $writer = new Bio::SearchIO::Writer::TextResultWriter();
-my $filt = new Bio::SearchIO(-file => ">$out", -writer => $writer);
+my $filt = new Bio::SearchIO(-file => ">$outFile", -writer => $writer);
 
 while (my $result = $blast->next_result())
 {
