@@ -32,10 +32,21 @@ my $argArr = $argPr->parse_args();
 my $inFile = $argArr->fasta;
 my $idsFile = $argArr->ids;
 
+unless(-e $inFile)
+{
+	print "Input FASTA file $inFile does not exist. Exiting now...";
+	exit(1);
+}
+unless(-e $idsFile)
+{
+	print "IDs file $idsFile does not exist. Exiting now...";
+	exit(1);
+}
+
 # Open files, use BioPerl to create object to read FASTA file and read all IDs
 # into an array
 my $inSeqs = Bio::SeqIO->new(-file => "$inFile", -format => 'fasta' );
-open ID, $idsFile or die "Could not open filter file";
+open ID, $idsFile or die "Could not open IDs file";
 my @idArr = <ID>;
 close ID;
 chomp @idArr;
