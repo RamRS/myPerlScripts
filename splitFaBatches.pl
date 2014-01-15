@@ -33,6 +33,13 @@ my $inFile = $argArr->fasta;
 my $batchSize=$argArr->bsize;
 my $prefix=$argArr->prefix;
 
+# Check for input file existence, quit gracefully otherwise
+unless (-e $inFile) 
+{
+	print "Input FASTA file does not exist!";
+	exit(1);	
+}
+
 # SeqIO object to read input FASTA file
 my $fa=Bio::SeqIO->new(-file => "$inFile", -format => 'fasta');
 
@@ -67,5 +74,6 @@ while (my $seq = $fa->next_seq())
 		}
 
 		# Write the sequence into its corresponding batch
+		print "Writing sequence # $count to file $outFile\n";
 		$outFile->write_seq($seq);
 }
