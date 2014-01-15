@@ -17,9 +17,6 @@ my $argPr = Getopt::ArgParse->new_parser(
 			lower bound, above the upper bound and between the two bounds.'
 			);
 
-# Variables to hold min and max values
-
-
 # Add arguments to capture input FASTA file, min length and max length
 $argPr->add_arg('--fasta','-f',required=>1,help=>'input FASTA file');
 $argPr->add_arg('--min','-l',required=>0,default=>0,help=>'minimum length to filter with. Default: 0');
@@ -36,6 +33,13 @@ my $argArr = $argPr->parse_args();
 my $inFile = $argArr->fasta;
 my $minLen = $argArr->min;
 my $maxLen = $argArr->max;
+
+# Check for input file existence, quit gracefully otherwise
+unless (-e $inFile) 
+{
+	print "Input FASTA file does not exist!";
+	exit(1);	
+}
 
 # BioPerl objects for the input file
 my $inSeqs = Bio::SeqIO->new(-file => "$inFile", -format => 'fasta');
