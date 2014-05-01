@@ -16,7 +16,7 @@ my $argPr = Getopt::ArgParse->new_parser(
                         );
 
 # Add arguments to capture input FASTA file
-$argPr->add_arg('fasta',required=>1,help=>'input FASTA file');
+$argPr->add_arg('fasta',required=>1,help=>'input FASTA file', nargs => '+');
 
 # Print usage text on improper usage
 if (scalar(@ARGV) != 1)
@@ -28,31 +28,34 @@ if (scalar(@ARGV) != 1)
 
 my $argArr = $argPr->parse_args();
 
-my $inFile = $argArr->fasta;
+my @inFiles = $argArr->fasta;
 
-# Error out if input file does not exist
-unless (-e $inFile)
+foreach my $inFile(@inFiles)
 {
-        print "Input file does not exist!";
-        exit(1);
-}
-
-my $inSeqs = Bio::SeqIO->new("-format" => "fasta", "-file" => "$inFile");
-
-# Iterate thru sequences
-while (my $seqRec = $inSeqs->next_seq())
-{
-	# Pick sequence part for RegEx motif matching
-	my $seq = $seqRec->seq;
-
-	# Extract sequence header
-	my $seqHeader = $seqRec->id . " " . $seqRec->desc;
-
-	# Iterate thru motif matches
-	while ($seq =~ /(CA[AC][ATGC]TG[ATCG])/gi)
+	# Error out if input file does not exist
+	unless (-e $inFile)
 	{
-		# Print Sequence header, matching 7-mer and position as
-		# tab separated values
-		print("$seqHeader\t$1\t$-[0]\n");
+        	print "Input file $inFile does not exist!";
+        	
+	}
+
+	my $inSeqs = Bio::SeqIO->new("-format" => "fasta", "-file" => "$inFile");
+
+	# Iterate thru sequences
+	while (my $seqRec = $inSeqs->next_seq())
+	{
+		# Pick sequence part for RegEx motif matching
+		my $seq = $seqRec->seq;
+
+		# Extract sequence header
+		my $seqHeader = $seqRec->id . " " . $seqRec->desc;
+	
+		# Iterate thru motif matches
+		while ($seq =~ /(CA[AC][ATGC]TG[ATCG])/gi)
+		{
+			# Print Sequence header, matching 7-mer and position as
+			# tab separated values
+			print("$seqHeader\t$1\t$-[0]\n");
+		}
 	}
 }
