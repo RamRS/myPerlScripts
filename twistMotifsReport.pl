@@ -16,10 +16,10 @@ my $argPr = Getopt::ArgParse->new_parser(
                         );
 
 # Add arguments to capture input FASTA file
-$argPr->add_arg('fasta',required=>1,help=>'input FASTA file', nargs => '+');
+$argPr->add_arg('fasta',required=>1,help=>'input FASTA file(s)', nargs => '+');
 
 # Print usage text on improper usage
-if (scalar(@ARGV) != 1)
+if (scalar(@ARGV) == 0)
 {
 	print(scalar(@ARGV));
         $argPr->print_usage();
@@ -36,7 +36,6 @@ foreach my $inFile(@inFiles)
 	unless (-e $inFile)
 	{
         	print "Input file $inFile does not exist!";
-        	
 	}
 
 	my $inSeqs = Bio::SeqIO->new("-format" => "fasta", "-file" => "$inFile");
@@ -51,6 +50,7 @@ foreach my $inFile(@inFiles)
 		my $seqHeader = $seqRec->id . " " . $seqRec->desc;
 	
 		# Iterate thru motif matches
+		#TO-DO: Add case cpecific switch for intron exon differentiation
 		while ($seq =~ /(CA[AC][ATGC]TG[ATCG])/gi)
 		{
 			# Print Sequence header, matching 7-mer and position as
