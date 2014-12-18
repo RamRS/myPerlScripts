@@ -20,17 +20,10 @@ my $argPr = Getopt::ArgParse->new_parser(
 # Add arguments to capture input FASTA file
 $argPr->add_arg('--in','-i',required=>1,help=>'input BLAST results file');
 
-# Print usage on improper call
-if(scalar(@ARGV) != 1)
-{
-	$argPr->print_usage();
-	exit(1);
-}
-
 # Read the BLAST results file
 $\="\n";
 my $argArr = $argPr->parse_args();
-my $inFile = $argArr->fasta;
+my $inFile = $argArr->in;
 
 # Determine output file to write filtered results to
 my ($fileName,$dirPath,$extn)=fileparse($inFile,qr/\.[^.]*/);
