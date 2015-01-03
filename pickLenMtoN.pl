@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 use strict;
+use warnings;
 use Bio::Seq;
 use Bio::SeqIO;
 use Getopt::ArgParse;
@@ -52,9 +53,9 @@ while ( my $seqRec = $inSeqs->next_seq())
 		# Check length
         if ($seqLen >= $minLen && $seqLen <= $maxLen)
         {
-        		# If length is between min and max, write to output
+        		# If lejngth is between min and max, write to output
 				my $seqId = $seqRec->id();
-				print ">$seqId";
+				print ">$seqId\n";
 				print $seqRec->sequence()."\n";
 
                 # counter increment for length distribution calculation
