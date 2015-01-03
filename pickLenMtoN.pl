@@ -22,12 +22,6 @@ $argPr->add_arg('--fasta','-f',required=>1,help=>'input FASTA file');
 $argPr->add_arg('--min','-l',required=>0,default=>0,help=>'minimum length to filter with. Default: 0');
 $argPr->add_arg('--max','-u',required=>0,default=>10000,help=>'maximum length to filter with. Default: 10,000');
 
-if(scalar(@ARGV) < 1 or scalar(@ARGV) > 3)
-{
-	$argPr->print_usage();
-	exit(1);
-}
-
 # Parse CMD line args to variables
 my $argArr = $argPr->parse_args();
 my $inFile = $argArr->fasta;
@@ -45,7 +39,9 @@ unless (-e $inFile)
 my $inSeqs = Bio::SeqIO->new(-file => "$inFile", -format => 'fasta');
 
 # Counters, all initialized to 0
-$_ = 0 for my ($cBelow,$cIn,$cAbove);
+my $cBelow = 0;
+my $cIn = 0;
+my $cAbove = 0
 
 # Iterate through the sequences
 while ( my $seqRec = $inSeqs->next_seq()) 
@@ -58,8 +54,8 @@ while ( my $seqRec = $inSeqs->next_seq())
         {
         		# If length is between min and max, write to output
 				my $seqId = $seqRec->id();
-				print "\n>$seqId";
-				print $seqRec->sequence();
+				print ">$seqId";
+				print $seqRec->sequence()."\n";
 
                 # counter increment for length distribution calculation
                 $cIn++;
