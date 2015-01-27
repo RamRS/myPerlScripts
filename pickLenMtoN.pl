@@ -42,7 +42,7 @@ my $inSeqs = Bio::SeqIO->new(-file => "$inFile", -format => 'fasta');
 # Counters, all initialized to 0
 my $cBelow = 0;
 my $cIn = 0;
-my $cAbove = 0
+my $cAbove = 0;
 
 # Iterate through the sequences
 while ( my $seqRec = $inSeqs->next_seq()) 
@@ -56,7 +56,7 @@ while ( my $seqRec = $inSeqs->next_seq())
         		# If lejngth is between min and max, write to output
 				my $seqId = $seqRec->id();
 				print ">$seqId\n";
-				print $seqRec->sequence()."\n";
+				print $seqRec->seq()."\n";
 
                 # counter increment for length distribution calculation
                 $cIn++;
