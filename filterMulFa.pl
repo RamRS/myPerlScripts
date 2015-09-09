@@ -20,13 +20,6 @@ my $argPr = Getopt::ArgParse->new_parser(
 $argPr->add_arg('--fasta','-f',required=>1,help=>'input FASTA file');
 $argPr->add_arg('--ids','-i',required=>1,help=>'file with IDs of sequences to be picked');
 
-# Print usage text on improper usage
-if (scalar(@ARGV) != 2)
-{
-	$argPr->print_usage();
-	exit(1);
-}
-
 # Store input arguments into variables
 my $argArr = $argPr->parse_args();
 my $inFile = $argArr->fasta;
